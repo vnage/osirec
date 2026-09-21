@@ -1,3 +1,4 @@
+#чо сморишь
 import json
 import os
 import hashlib
