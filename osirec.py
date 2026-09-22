@@ -8,7 +8,7 @@ import random
 import json
 from urllib.parse import quote, unquote
 
-#code by feeraSe telegram: feercode.t.me
+#code by feeraSe telegram: feeracode.t.me
 #code by Yarik528 github: github.com/Yarik528
 
 TLD_COUNTRY_MAP = {
