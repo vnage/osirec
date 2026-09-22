@@ -3,12 +3,84 @@ import urllib.request
 import hashlib
 import base64
 
+TLD_COUNTRY_MAP = {
+    ".ru": "Russia",
+    ".su": "Soviet Union",
+    ".us": "United States",
+    ".uk": "United Kingdom",
+    ".de": "Germany",
+    ".fr": "France",
+    ".it": "Italy",
+    ".es": "Spain",
+    ".cn": "China",
+    ".jp": "Japan",
+    ".kr": "South Korea",
+    ".in": "India",
+    ".br": "Brazil",
+    ".ca": "Canada",
+    ".au": "Australia",
+    ".nl": "Netherlands",
+    ".pl": "Poland",
+    ".ua": "Ukraine",
+    ".by": "Belarus",
+    ".kz": "Kazakhstan",
+    ".com": "Commercial (Global)",
+    ".org": "Organization (Global)",
+    ".net": "Network (Global)",
+    ".io": "British Indian Ocean Territory",
+    ".ai": "Anguilla",
+    ".me": "Montenegro"
+}
+
+def get_tld(domain):
+    parts = domain.split(".")
+    if len(parts) >= 2:
+        return "." + parts[-1]
+    return None
+
+def get_country_by_domain(domain):
+    tld = get_tld(domain)
+    if tld and tld in TLD_COUNTRY_MAP:
+        return TLD_COUNTRY_MAP[tld]
+    return "Unknown"
+
+def get_server_info(url):
+    if not url.startswith("http"):
+        url = "http://" + url
+    try:
+        req = urllib.request.Request(url, method='HEAD')
+        req.add_header('User-Agent', 'Mozilla/5.0')
+        with urllib.request.urlopen(req, timeout=5) as response:
+            headers = dict(response.headers)
+            server = headers.get('Server', 'Unknown')
+            powered_by = headers.get('X-Powered-By', 'Unknown')
+            return {
+                "server": server,
+                "powered_by": powered_by
+            }
+    except Exception as e:
+        return {"error": str(e)}
+
 def get_ip_info(domain):
     try:
         ip = socket.gethostbyname(domain)
         return {"domain": domain, "ip": ip}
     except socket.gaierror:
         return {"error": "could not resolve domain"}
+
+def get_full_domain_info(domain):
+    result = {}
+    
+    ip_info = get_ip_info(domain)
+    result.update(ip_info)
+    
+    country = get_country_by_domain(domain)
+    result["country"] = country
+    
+    server_info = get_server_info(domain)
+    result.update(server_info)
+    
+    return result
 
 def check_username(username):
     sites = [
@@ -95,25 +167,29 @@ def osint_menu():
     while True:
         print("\nosint submenu:")
         print("1. domain ip info")
-        print("2. username check (sherlock-like)")
-        print("3. whois lookup")
-        print("4. dns records")
-        print("5. back")
+        print("2. full domain info (ip, country, server)")
+        print("3. username check (sherlock-like)")
+        print("4. whois lookup")
+        print("5. dns records")
+        print("6. back")
         
         ch = input("> ")
         if ch == "1":
             domain = input("enter domain: ")
             print(get_ip_info(domain))
         elif ch == "2":
+            domain = input("enter domain: ")
+            print(get_full_domain_info(domain))
+        elif ch == "3":
             username = input("enter username: ")
             print(check_username(username))
-        elif ch == "3":
-            domain = input("enter domain: ")
-            print(get_whois_info(domain))
         elif ch == "4":
             domain = input("enter domain: ")
-            print(get_dns_records(domain))
+            print(get_whois_info(domain))
         elif ch == "5":
+            domain = input("enter domain: ")
+            print(get_dns_records(domain))
+        elif ch == "6":
             break
 
 def security_menu():
