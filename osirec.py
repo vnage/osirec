@@ -2,7 +2,8 @@ import socket
 import urllib.request
 import hashlib
 import base64
-
+#code by feeraSe telegram: feercode.t.me
+#code by Yarik528 github: github.com/Yarik528
 TLD_COUNTRY_MAP = {
     ".ru": "Russia",
     ".su": "Soviet Union",
