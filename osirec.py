@@ -7,8 +7,9 @@ import string
 import random
 import json
 import codecs
-from urllib.parse import quote, 
+from urllib.parse import quote, unquote
 
+# Импортируем баннер из отдельного файла
 from banner import print_banner
 
 # code by feeraSe telegram: feeracode.t.me
