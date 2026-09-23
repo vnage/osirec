@@ -7,7 +7,9 @@ import string
 import random
 import json
 import codecs
-from urllib.parse import quote, unquote
+from urllib.parse import quote, 
+
+from banner import print_banner
 
 # code by feeraSe telegram: feeracode.t.me
 # code by Yarik528 github: github.com/Yarik528
@@ -290,6 +292,8 @@ def coding_security_menu():
 
 
 def main_menu():
+    print_banner()  # <-- Баннер теперь загружается из banner.py
+    
     while True:
         print("\nWelcome To Osirec Toolkit")
         print("1. Web Tools")
