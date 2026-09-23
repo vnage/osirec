@@ -6,10 +6,11 @@ import re
 import string
 import random
 import json
+import codecs
 from urllib.parse import quote, unquote
 
-#code by feeraSe telegram: feeracode.t.me
-#code by Yarik528 github: github.com/Yarik528
+# code by feeraSe telegram: feeracode.t.me
+# code by Yarik528 github: github.com/Yarik528
 
 TLD_COUNTRY_MAP = {
     ".ru": "Russia", ".su": "Soviet Union", ".us": "United States",
@@ -24,6 +25,7 @@ TLD_COUNTRY_MAP = {
     ".me": "Montenegro", ".gov": "Government (US)", ".edu": "Education (US)"
 }
 
+
 def get_tld(domain):
     try:
         parts = domain.lower().split(".")
@@ -33,11 +35,13 @@ def get_tld(domain):
     except Exception:
         return None
 
+
 def get_country_by_domain(domain):
     tld = get_tld(domain)
     if tld and tld in TLD_COUNTRY_MAP:
         return TLD_COUNTRY_MAP[tld]
     return "Unknown / Generic TLD"
+
 
 def get_server_headers(url):
     if not url.startswith("http"):
@@ -58,12 +62,14 @@ def get_server_headers(url):
     except Exception as e:
         return {"Error": f"Could not fetch headers: {str(e)}"}
 
+
 def get_ip_info(domain):
     try:
         ip = socket.gethostbyname(domain)
         return {"Domain": domain, "IP Address": ip}
     except socket.gaierror:
         return {"Error": "Could not resolve domain"}
+
 
 def get_full_web_info(domain):
     result = {}
@@ -85,14 +91,18 @@ def check_username(username):
     for name, url_template in sites:
         url = url_template.format(username)
         try:
-            code = urllib.request.urlopen(url).getcode()
+            req = urllib.request.Request(url, method='HEAD')
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
+            code = urllib.request.urlopen(req, timeout=5).getcode()
+
             if code == 200:
-                results[name] = "Found"
+                results[name] = f"Found - {url}"
             else:
                 results[name] = "Not Found"
         except Exception:
             results[name] = "Error / Not Found"
     return results
+
 
 def validate_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -100,6 +110,7 @@ def validate_email(email):
         return {"Email": email, "Valid Format": True}
     else:
         return {"Email": email, "Valid Format": False}
+
 
 def reverse_ip_lookup(ip):
     try:
@@ -128,15 +139,17 @@ def check_password_strength(password):
         score += 1
     else:
         feedback.append("No special chars")
-    
+
     strength = f"{score}/4"
     if not feedback:
         feedback.append("Strong")
     return {"Strength": strength, "Details": ", ".join(feedback)}
 
+
 def generate_password(length=16):
     chars = string.ascii_letters + string.digits + "!@#$%^&*"
     return ''.join(random.choice(chars) for _ in range(length))
+
 
 def generate_hash(text, algorithm="sha256"):
     try:
@@ -152,6 +165,7 @@ def generate_hash(text, algorithm="sha256"):
     except Exception as e:
         return {"Error": str(e)}
 
+
 def format_json(text):
     try:
         parsed = json.loads(text)
@@ -159,8 +173,10 @@ def format_json(text):
     except Exception:
         return "Invalid JSON"
 
+
 def url_encode(text):
     return quote(text)
+
 
 def url_decode(text):
     try:
@@ -168,11 +184,8 @@ def url_decode(text):
     except Exception:
         return "Invalid URL encoding"
 
-def rot13(text):
-    return codecs.encode(text, 'rot_13') if 'codecs' in globals() else text # fallback handled below
 
 def rot13_safe(text):
-    import codecs
     return codecs.encode(text, 'rot_13')
 
 
@@ -183,7 +196,7 @@ def web_tools_menu():
         print("2. Get IP Address Only")
         print("3. Check Server Headers")
         print("4. Back")
-        
+
         ch = input("> ")
         if ch == "1":
             domain = input("Enter Domain: ")
@@ -197,6 +210,7 @@ def web_tools_menu():
         elif ch == "4":
             break
 
+
 def osint_tools_menu():
     while True:
         print("\n--- Osint Tools ---")
@@ -204,7 +218,7 @@ def osint_tools_menu():
         print("2. Validate Email Format")
         print("3. Reverse IP Lookup")
         print("4. Back")
-        
+
         ch = input("> ")
         if ch == "1":
             username = input("Enter Username: ")
@@ -220,6 +234,7 @@ def osint_tools_menu():
         elif ch == "4":
             break
 
+
 def coding_security_menu():
     while True:
         print("\n--- Coding & Security ---")
@@ -231,7 +246,7 @@ def coding_security_menu():
         print("6. Format JSON")
         print("7. ROT13 Cipher")
         print("8. Back")
-        
+
         ch = input("> ")
         if ch == "1":
             pwd = input("Enter Password: ")
@@ -273,6 +288,7 @@ def coding_security_menu():
         elif ch == "8":
             break
 
+
 def main_menu():
     while True:
         print("\nWelcome To Osirec Toolkit")
@@ -280,7 +296,7 @@ def main_menu():
         print("2. Osint Tools")
         print("3. Coding & Security")
         print("4. Exit")
-        
+
         ch = input("> ")
         if ch == "1":
             web_tools_menu()
@@ -290,6 +306,7 @@ def main_menu():
             coding_security_menu()
         elif ch == "4":
             break
+
 
 if __name__ == "__main__":
     main_menu()
