@@ -20,8 +20,14 @@ AUTHORS_LINE = f"{RED}Authors: feeraSe & Yarik528{RESET}"
 SEPARATOR = "-" * 40
 
 
+def clear_screen():
+    """Очищает экран терминала."""
+    print('\033[2J\033[H', end='')
+
+
 def print_banner():
-    """Выводит приветственный баннер при запуске."""
+    """Очищает экран и выводит приветственный баннер."""
+    clear_screen()
     print(OSIREC_BANNER)
     print(AUTHORS_LINE)
     print(SEPARATOR)
