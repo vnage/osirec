@@ -1,4 +1,4 @@
-VERSION = "1.1.4"
+VERSION = "1.1.5"
 
 RED = '\033[91m'
 BOLD = '\033[1m'
