@@ -138,6 +138,46 @@ def reverse_ip_lookup(ip):
         return {"IP": ip, "Hostname": "No PTR record found"}
 
 
+def get_ip_geolocation(ip_address):
+    """Определяет примерное местоположение по IP через бесплатный API ip-api.com."""
+    # Валидация формата IP
+    ip_pattern = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$'
+    if not re.match(ip_pattern, ip_address):
+        return {"Error": "Invalid IP format. Use: xxx.xxx.xxx.xxx"}
+
+    # Проверка диапазона октетов
+    octets = ip_address.split(".")
+    for octet in octets:
+        if int(octet) > 255:
+            return {"Error": "Invalid IP: octets must be 0-255"}
+
+    url = f"http://ip-api.com/json/{ip_address}?fields=status,message,country,regionName,city,lat,lon,isp,as,query"
+
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Osirec'})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = json.loads(response.read().decode())
+
+        if data.get("status") == "success":
+            return {
+                "IP": data["query"],
+                "Country": data["country"],
+                "Region": data["regionName"],
+                "City": data["city"],
+                "Latitude": data["lat"],
+                "Longitude": data["lon"],
+                "ISP": data["isp"],
+                "AS": data["as"]
+            }
+        else:
+            return {"Error": data.get("message", "Invalid IP or reserved range")}
+
+    except urllib.error.URLError as e:
+        return {"Error": f"Network error: {str(e)}"}
+    except Exception as e:
+        return {"Error": f"Geolocation failed: {str(e)}"}
+
+
 def check_password_strength(password):
     score = 0
     feedback = []
@@ -269,7 +309,8 @@ def osint_tools_menu():
         print("1. Username Check (Social Media)")
         print("2. Validate Email Format")
         print("3. Reverse IP Lookup")
-        print("4. Back")
+        print("4. IP Geolocation")
+        print("5. Back")
 
         ch = input("> ")
         if ch == "1":
@@ -284,6 +325,11 @@ def osint_tools_menu():
             ip = input("Enter IP: ")
             print(reverse_ip_lookup(ip))
         elif ch == "4":
+            ip = input("Enter IP Address: ")
+            result = get_ip_geolocation(ip)
+            for k, v in result.items():
+                print(f"{k}: {v}")
+        elif ch == "5":
             break
 
 
