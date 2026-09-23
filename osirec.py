@@ -83,13 +83,27 @@ def get_full_web_info(domain):
 
 
 def check_username(username):
+    if not username or len(username.strip()) == 0:
+        return {"Error": "Username cannot be empty"}
+
     sites = [
         ("GitHub", "https://github.com/{}"),
         ("Twitter/X", "https://twitter.com/{}"),
         ("Instagram", "https://instagram.com/{}"),
         ("Reddit", "https://www.reddit.com/user/{}"),
-        ("Pinterest", "https://pinterest.com/{}")
+        ("Pinterest", "https://pinterest.com/{}"),
+        ("TikTok", "https://www.tiktok.com/@{}"),
+        ("Telegram", "https://t.me/{}"),
+        ("VKontakte", "https://vk.com/{}"),
+        ("Odnoklassniki", "https://ok.ru/{}"),
+        ("LinkedIn", "https://www.linkedin.com/in/{}"),
+        ("YouTube", "https://www.youtube.com/@{}"),
+        ("Twitch", "https://www.twitch.tv/{}"),
+        ("Steam", "https://steamcommunity.com/id/{}"),
+        ("Medium", "https://medium.com/@{}"),
+        ("GitLab", "https://gitlab.com/{}")
     ]
+
     results = {}
     for name, url_template in sites:
         url = url_template.format(username)
@@ -104,6 +118,7 @@ def check_username(username):
                 results[name] = "Not Found"
         except Exception:
             results[name] = "Error / Not Found"
+
     return results
 
 
@@ -293,8 +308,8 @@ def coding_security_menu():
 
 
 def main_menu():
-    print_banner()  # <-- Баннер теперь загружается из banner.py
-    
+    print_banner()
+
     while True:
         print("\nWelcome To Osirec Toolkit")
         print("1. Web Tools")
