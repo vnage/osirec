@@ -169,6 +169,40 @@ def generate_password(length=16):
     return ''.join(random.choice(chars) for _ in range(length))
 
 
+def generate_advanced_password():
+    print("\n--- Advanced Password Generator ---")
+    
+    length_input = input("Length (default 16): ").strip() or "16"
+    try:
+        length = int(length_input)
+        if length < 4:
+            print("[!] Minimum length is 4")
+            return
+    except ValueError:
+        print("[!] Invalid number")
+        return
+
+    use_upper = input("Uppercase A-Z? (y/n, default y): ").lower() != 'n'
+    use_lower = input("Lowercase a-z? (y/n, default y): ").lower() != 'n'
+    use_digits = input("Digits 0-9? (y/n, default y): ").lower() != 'n'
+    use_special = input("Special chars !@#$%^&*? (y/n, default y): ").lower() != 'n'
+    use_cyrillic = input("Cyrillic А-Яа-я? (y/n, default n): ").lower() == 'y'
+
+    charset = ""
+    if use_upper: charset += string.ascii_uppercase
+    if use_lower: charset += string.ascii_lowercase
+    if use_digits: charset += string.digits
+    if use_special: charset += "!@#$%^&*"
+    if use_cyrillic: charset += "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+
+    if not charset:
+        print("[!] Select at least one character set!")
+        return
+
+    password = ''.join(random.choice(charset) for _ in range(length))
+    print(f"\n[+] Generated ({length} chars):\n{password}")
+
+
 def generate_hash(text, algorithm="sha256"):
     try:
         if algorithm == "md5":
@@ -257,13 +291,14 @@ def coding_security_menu():
     while True:
         print("\n--- Coding & Security ---")
         print("1. Check Password Strength")
-        print("2. Generate Strong Password")
-        print("3. Generate Hash (MD5/SHA)")
-        print("4. Base64 Encode/Decode")
-        print("5. URL Encode/Decode")
-        print("6. Format JSON")
-        print("7. ROT13 Cipher")
-        print("8. Back")
+        print("2. Generate Simple Password (Legacy)")
+        print("3. Generate Advanced Password (Custom)")
+        print("4. Generate Hash (MD5/SHA)")
+        print("5. Base64 Encode/Decode")
+        print("6. URL Encode/Decode")
+        print("7. Format JSON")
+        print("8. ROT13 Cipher")
+        print("9. Back")
 
         ch = input("> ")
         if ch == "1":
@@ -276,10 +311,12 @@ def coding_security_menu():
             except ValueError:
                 print("Invalid number")
         elif ch == "3":
+            generate_advanced_password()
+        elif ch == "4":
             text = input("Enter Text: ")
             algo = input("Algorithm (md5/sha1/sha256/sha512): ") or "sha256"
             print(generate_hash(text, algo))
-        elif ch == "4":
+        elif ch == "5":
             action = input("Encode (1) or Decode (2)? ")
             text = input("Enter Text: ")
             if action == "1":
@@ -289,21 +326,21 @@ def coding_security_menu():
                     print(base64.b64decode(text.encode()).decode())
                 except Exception:
                     print("Invalid Base64")
-        elif ch == "5":
+        elif ch == "6":
             action = input("Encode (1) or Decode (2)? ")
             text = input("Enter Text: ")
             if action == "1":
                 print(url_encode(text))
             else:
                 print(url_decode(text))
-        elif ch == "6":
+        elif ch == "7":
             print("Paste JSON:")
             text = input("")
             print(format_json(text))
-        elif ch == "7":
+        elif ch == "8":
             text = input("Enter Text: ")
             print(rot13_safe(text))
-        elif ch == "8":
+        elif ch == "9":
             break
 
 
