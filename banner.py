@@ -1,10 +1,9 @@
-# banner.py
+VERSION = "1.1.4"
 
 RED = '\033[91m'
 BOLD = '\033[1m'
 RESET = '\033[0m'
 
-# Шрифт "Big" - требует широкого экрана!
 OSIREC_BANNER = rf"""{RED}{BOLD}
     ███████     █████████  █████ ███████████   ██████████   █████████ 
   ███░░░░░███  ███░░░░░███░░███ ░░███░░░░░███ ░░███░░░░░█  ███░░░░░███
@@ -16,7 +15,7 @@ OSIREC_BANNER = rf"""{RED}{BOLD}
    ░░░░░░░     ░░░░░░░░░  ░░░░░ ░░░░░   ░░░░░ ░░░░░░░░░░   ░░░░░░░░░  
 {RESET}"""
 
-AUTHORS_LINE = f"{RED}Authors: feeraSe & Yarik528{RESET}"
+AUTHORS_LINE = f"{RED}Authors: feeraSe & Yarik528 | Version: {VERSION}{RESET}"
 SEPARATOR = "-" * 40
 
 
